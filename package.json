@@ -30,6 +30,7 @@
     "webpack": "^1.13.1"
   },
   "dependencies": {
+    "immutable": "^3.8.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
