@@ -30,7 +30,7 @@ function webpack() {
       loader: 'babel-loader',
       include: [path.join(__dirname, 'js')],
       query: {
-        presets: ['es2015'],
+        presets: ['es2015', 'react'],
         compact: false
       }
     }
