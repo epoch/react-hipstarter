@@ -2,6 +2,7 @@
 var gulp = require('gulp');
 var path = require('path');
 var runSeq = require('run-sequence');
+var historyApiFallback = require('connect-history-api-fallback');
 const PORT = 3000;
 const PLUGINS = {};
 
@@ -67,8 +68,11 @@ function watch() {
 function serve() {
   PLUGINS.server.init({
     port: PORT,
-    server: './',
-    open: false
+    open: false,
+    server: {
+      baseDir: './',
+      middleware: [historyApiFallback()]
+    }
   });
 }
 

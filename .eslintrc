@@ -1,17 +1,27 @@
 {
   "parser"  : "babel-eslint",
-  "extends": ["eslint:recommended"],
-  "plugins": ["react"],
+  "extends" : [
+    "standard",
+    "standard-react"
+  ],
+  "plugins": [
+    "babel"
+  ],
   "env"     : {
     "browser" : true
   },
-  "globals": {
-    "require": true
+  "globals" : {
+    "__DEV__"      : false,
+    "__PROD__"     : false,
+    "__DEBUG__"    : false,
+    "__COVERAGE__" : false,
+    "__BASENAME__" : false
   },
   "rules": {
-    "strict": 0,
-    "no-console": 0,
-    "quotes": [2, "single"],
-    "eqeqeq": 0
+    "max-len": [2, 120, 2],
+    "space-before-function-paren": [0],
+    "curly": [1],
+    "no-unused-vars": [1],
+    semi: [0, "always"]
   }
 }
