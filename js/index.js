@@ -1,61 +1,47 @@
-var React = require('react');
-import { createStore } from 'Redux';
-var ReactDOM = require('react-dom');
+import React from 'react';
+import { createStore, combineReducers } from 'Redux';
+import { render } from 'react-dom';
 import { Provider, connect } from 'react-redux';
+import { TodoList } from './components/todoList';
+import { TaskDetails } from './components/taskDetails';
+import Thing from './components/thing';
+import { addTask } from './actions';
+import { Router, Route, browserHistory } from 'react-router';
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import { tasks } from './reducers';
 
-const uid = () => Math.random().toString(34).slice(2);
+// const store = createStore(combineReducers({
+//   tasks: tasks,
+//   router: routerReducer
+// }));
 
-const addTask = body => ({
-  type: 'ADD_TASK',
-  data: {
-    id: uid(),
-    body: body
+// createStore takes an action handler function (reducer)
+const store = createStore(function(state = {}, action) {
+  // state tree
+  return {
+    tasks: tasks(state.tasks, action),
+    routing: routerReducer(state.router, action)
   }
 });
 
-// state transformer for tasks []
-function tasks(tasks = [], action) {
-  switch (action.type) {
-    case 'ADD_TASK': {
-      let newTask = Object.assign({}, action.data);
-      return [...tasks, newTask];
-    }
-    default:
-      return tasks;
-  }
-}
+const history = syncHistoryWithStore(browserHistory, store);
 
-const store = createStore(tasks);
+render(
+  <Provider store={store}>
+    <Router history={history}>
+      <Route path='/' component={TodoList} />
+      <Route path='/thing' component={Thing} />
+      <Route path='/tasks/:taskId' component={TaskDetails} />
+    </Router>
+  </Provider>,
+  document.getElementById('root')
+);
+
+store.subscribe(function() {
+  console.log(store.getState());
+})
 
 // function that send an action
 window.add = (body) => {
   store.dispatch(addTask(body));
 }
-
-store.subscribe(function() {
-  console.log(store.getState())
-})
-
-const Todos = React.createClass({
-  render() {
-    return <div>
-      <ul>
-        {this.props.items.map((task) =>
-          <li key={task.id}>{task.body}</li>
-        )}
-      </ul>
-    </div>
-  }
-})
-
-const TodoList = connect(
-  (state) => ({ items: state }),
-  (dispatch) => ({ addTask: body => dispatch(addTask(body)) })
-)(Todos);
-
-ReactDOM.render(
-  <Provider store={store}>
-    <TodoList />
-  </Provider>,
-  document.getElementById('root')
-);
